@@ -32,4 +32,27 @@ def main():
     # User input
     title_of_movie = difflib.get_close_matches(user_input, data['title'].tolist())
 
-    
+    user_input = st.text_input("Enter a movie title:")
+    if user_input:
+        title_of_movie = difflib.get_close_matches(user_input, data['title'])
+        if title_of_movie:
+            close = title_of_movie[0]
+            index_of_movie = data[data.title == close]['index'].values[0]
+
+            # Get similarity scores
+            similarity_of_movie = list(enumerate(similarity[index_of_movie]))
+
+            # Sort and display recommendations
+            sorted_similarities = sorted(similarity_of_movie, key=lambda x: x[1], reverse=True)
+            st.header("Recommended Movies:".title())
+            for i in range(10):
+                index = sorted_similarities[i+1][0]
+                title = data[data.index == index]['title'].values[0]
+                st.write(f"{i+1}. {title}")
+        else:
+            st.write("Movie not found.".title())
+    else:
+        st.write("Please enter a movie title.")
+
+if __name__ == "__main__":
+    main()
